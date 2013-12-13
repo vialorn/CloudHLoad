@@ -13,6 +13,7 @@ namespace CloudHLoad
         public string No;
         public string QueryCount;
         public string ErrorCount;
+        public string LastError;
         public string AverageTime;
     }
 
@@ -64,6 +65,7 @@ namespace CloudHLoad
                 tr.No = thread.No;
                 tr.QueryCount = thread.QueryCount;
                 tr.ErrorCount = thread.ErrorCount;
+                tr.LastError = thread.LastError;
                 tr.AverageTime = thread.AverageTime;
                 work.ReportProgress(0, tr);
             }
@@ -71,6 +73,7 @@ namespace CloudHLoad
             res.No = thread.No;
             res.QueryCount = thread.QueryCount;
             res.ErrorCount = thread.ErrorCount;
+            res.LastError = thread.LastError;
             res.AverageTime = thread.AverageTime;
             e.Result = res;
         }

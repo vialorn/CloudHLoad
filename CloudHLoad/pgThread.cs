@@ -9,10 +9,11 @@ namespace CloudHLoad
 {
     class pgThread
     {
-        public int thNo;
-        public int thQueryCount;
-        public int thErrorCount;
-        public TimeSpan thAverageTime;
+        private int thNo;
+        private int thQueryCount;
+        private int thErrorCount;
+        private string thLastError;
+        private TimeSpan thAverageTime;
         
         private TimeSpan[] thTimes;
         private int thTimesPointer;
@@ -23,6 +24,7 @@ namespace CloudHLoad
         public string No { get { return this.thNo.ToString("00"); } }
         public string QueryCount { get { return this.thQueryCount.ToString("0000"); } }
         public string ErrorCount { get { return this.thErrorCount.ToString("0000"); } }
+        public string LastError { get { return this.thLastError;  } }
         public string AverageTime { get { return this.thAverageTime.ToString(@"mm\:s\:fff"); } }
 
         public pgThread(int pos, NpgsqlConnection conn)
@@ -30,6 +32,7 @@ namespace CloudHLoad
             this.thNo = pos;
             this.thQueryCount = 0;
             this.thErrorCount = 0;
+            this.thLastError = "";
             this.thAverageTime = new TimeSpan(0);
             this.thTimes = new TimeSpan[10];
             this.thTimesPointer = 0;
@@ -39,6 +42,7 @@ namespace CloudHLoad
             this.pg_cmd.CommandType = System.Data.CommandType.Text;
             this.pg_cmd.CommandText = "select * from cloud.bizcs (:sh);";
             this.pg_cmd.Parameters.Add(new NpgsqlParameter("sh", NpgsqlDbType.Integer));
+            this.pg_cmd.CommandTimeout = 60;
             this.pg_cmd.Prepare();
         }
 
@@ -57,10 +61,12 @@ namespace CloudHLoad
                 if (this.thTimesPointer == this.thTimes.Length) this.thTimesPointer = 0;
                 long averageTicks = Convert.ToInt64(this.thTimes.Average(el => el.Ticks));
                 this.thAverageTime = new TimeSpan(averageTicks);
+                this.thLastError = "";
             }
             catch (Exception e)
             {
                 this.thErrorCount++;
+                this.thLastError = e.Message;
             }
         }
     }

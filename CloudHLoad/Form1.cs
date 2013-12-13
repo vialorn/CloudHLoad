@@ -95,6 +95,7 @@ namespace CloudHLoad
             lvRep.Items[pos].SubItems[2].Text = tr.QueryCount;
             lvRep.Items[pos].SubItems[3].Text = tr.ErrorCount;
             lvRep.Items[pos].SubItems[4].Text = tr.AverageTime;
+            if (tr.LastError != "") LogEvent(tr.No + " # " + tr.LastError);
         }
 
         private void bwRunWorkerCompleted(object sender, RunWorkerCompletedEventArgs e)
