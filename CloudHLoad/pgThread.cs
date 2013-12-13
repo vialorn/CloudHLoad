@@ -63,10 +63,14 @@ namespace CloudHLoad
                 this.thAverageTime = new TimeSpan(averageTicks);
                 this.thLastError = "";
             }
+            catch (NpgsqlException e)
+            {
+                if (e.ErrorCode == -2147467259) this.thLastError = "тайм-аут!";
+            }
             catch (Exception e)
             {
                 this.thErrorCount++;
-                this.thLastError = e.Message;
+                this.thLastError = e.ToString();
             }
         }
     }
