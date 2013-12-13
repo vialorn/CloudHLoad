@@ -154,3 +154,6 @@ $RECYCLE.BIN/
 
 # Mac desktop service store files
 .DS_Store
+/CloudHLoad/Properties/Settings.Designer.cs
+/CloudHLoad/Properties/Settings.settings
+/CloudHLoad/app.config
