@@ -20,11 +20,24 @@ namespace CloudHLoad
         public Form1()
         {
             InitializeComponent();
-            tbServer.Text = CloudHLoad.Properties.Settings.Default.server_123;
+            try
+            {
+                tbServer.Text = CloudHLoad.Properties.Settings.Default["server_123"].ToString(); ;
+            }
+            catch (Exception e) { }
         }
         private void LogEvent(string msg)
         {
             tbLog.AppendText(DateTime.Now.ToString("HH:mm:ss") + " # " + msg + Environment.NewLine);
+        }
+
+        private string getDSN()
+        {
+            string server = tbServer.Text;
+            string database = CloudHLoad.Properties.Settings.Default.database;
+            string user_id = CloudHLoad.Properties.Settings.Default.user_id;
+            string password = CloudHLoad.Properties.Settings.Default.password;
+            return dsn.Replace(":server:", server).Replace(":database:", database).Replace(":user_id:", user_id).Replace(":password:", password);
         }
 
         private void btStart_Click(object sender, EventArgs e)
@@ -44,11 +57,7 @@ namespace CloudHLoad
             lvRep.Items.Clear();
             workers = new pgWorker[(int)nudThreadCount.Value];
             workerCount = 0;
-            string server = tbServer.Text;
-            string database = CloudHLoad.Properties.Settings.Default.database;
-            string user_id = CloudHLoad.Properties.Settings.Default.user_id;
-            string password = CloudHLoad.Properties.Settings.Default.password;
-            string dyn_dsn = dsn.Replace(":server:", server).Replace(":database:", database).Replace(":user_id:", user_id).Replace(":password:", password);
+            string dyn_dsn = getDSN();
             for (int i = 1; i <= nudThreadCount.Value; i++)
             {
                 workers[workerCount] = new pgWorker(i, dyn_dsn, bwProgressChanged, bwRunWorkerCompleted);
