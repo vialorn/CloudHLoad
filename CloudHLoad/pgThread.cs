@@ -65,7 +65,9 @@ namespace CloudHLoad
             }
             catch (NpgsqlException e)
             {
+                this.thErrorCount++;
                 if (e.ErrorCode == -2147467259) this.thLastError = "тайм-аут!";
+                else this.thLastError = e.BaseMessage;
             }
             catch (Exception e)
             {
